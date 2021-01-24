@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sign-in</title>
+    <meta name="google-signin-client_id"
+        content="705859569246-mkdghl9fk0pj9st0hkfqg4po74rfggbv.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+
+<body>
+
+    <img src="http://localhost:3000/image/products/6008dfc95d521843f0748eec-777.jpg" alt="foto">
+
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+
+        function onSignIn(googleUser) {
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log(id_token);
+            sendToken(id_token);
+        }
+
+        function sendToken(id_token) {
+            let xhr = null;
+            const url = 'http://localhost:3000/auth/google';
+
+            if (window.ActiveXObject) {
+                xhr = new ActiveXObject();
+            } else {
+                xhr = new XMLHttpRequest();
+            }
+
+            xhr.open('POST', url, true);
+
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function () {
+                console.log('Successful session start');
+                console.log(xhr.responseText);
+            }
+
+            xhr.send('id_token=' + id_token);
+
+        }
+
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>
